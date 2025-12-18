@@ -1,0 +1,12 @@
+- name: Shutdown Ubuntu Servers
+  hosts: 10.11.2.44
+  become: true
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+    - name: Shutdown immediately
+      command: shutdown -h now
+      async: 1
+      poll: 0
+      ignore_errors: true
