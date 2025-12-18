@@ -1,11 +1,19 @@
-- name: Shutdown Ubuntu Servers
+- name: Update and Shutdown Ubuntu/Debian Servers
   hosts: all
   become: true
-  become_method: sudo
-  gather_facts: false
+  gather_facts: true
 
   tasks:
-    - name: Shutdown immediately
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+        force_apt_get: yes
+
+    - name: Shutdown server immediately
       command: shutdown -h now
       async: 1
       poll: 0
