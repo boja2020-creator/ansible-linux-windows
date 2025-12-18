@@ -1,0 +1,6 @@
+- name: Check uptime
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Show uptime
+      command: uptime
