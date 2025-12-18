@@ -1,6 +1,20 @@
-- name: Check uptime
+---
+- name: Update Linux Servers (Ubuntu/Debian)
   hosts: all
-  gather_facts: no
+  become: yes
+  gather_facts: yes
+
   tasks:
-    - name: Show uptime
-      command: uptime
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+
+    - name: Remove unused packages
+      apt:
+        autoremove: yes
+        autoclean: yes
