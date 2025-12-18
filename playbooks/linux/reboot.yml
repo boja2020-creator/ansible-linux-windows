@@ -1,15 +1,12 @@
-- name: Force Reboot Linux Servers (No Timeout)
-  hosts: 10.11.2.44
+- name: Shutdown Ubuntu Servers
+  hosts: all
   become: true
   become_method: sudo
-  become_user: root
   gather_facts: false
 
   tasks:
-    - name: Force reboot immediately
-      reboot:
-        reboot_timeout: 0      # 0 = wait indefinitely
-        connect_timeout: 5     # connection timeout while waiting
-        pre_reboot_delay: 0
-        post_reboot_delay: 0
-        test_command: whoami
+    - name: Shutdown immediately
+      command: shutdown -h now
+      async: 1
+      poll: 0
+      ignore_errors: true
