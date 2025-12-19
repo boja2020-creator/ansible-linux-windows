@@ -1,6 +1,6 @@
 ---
 - name: Install Google Chrome on Ubuntu
-  hosts: ubuntu
+  hosts: 10.11.2.44
   become: yes
   gather_facts: yes
 
