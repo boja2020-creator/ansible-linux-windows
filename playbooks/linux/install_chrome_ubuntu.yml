@@ -1,6 +1,6 @@
 ---
 - name: Install Google Chrome on Ubuntu
-  hosts: 10.11.2.39
+  hosts: all
   become: yes
   become_method: sudo
 
