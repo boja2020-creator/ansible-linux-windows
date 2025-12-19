@@ -1,5 +1,7 @@
-- hosts: all
-  gather_facts: no
+---
+- name: Ping Linux Servers
+  hosts: 10.11.2.44
+  become: false
   tasks:
     - name: Ping test
       ping:
