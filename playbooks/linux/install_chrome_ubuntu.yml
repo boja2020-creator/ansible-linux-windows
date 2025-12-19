@@ -2,10 +2,9 @@
 - name: Install Google Chrome on Ubuntu
   hosts: 10.11.2.44
   become: yes
-  gather_facts: yes
 
   tasks:
-    - name: Install required dependencies
+    - name: Install required packages
       apt:
         name:
           - wget
@@ -14,7 +13,7 @@
         state: present
         update_cache: yes
 
-    - name: Add Google Chrome signing key
+    - name: Add Google Chrome GPG key
       apt_key:
         url: https://dl.google.com/linux/linux_signing_key.pub
         state: present
@@ -23,14 +22,8 @@
       apt_repository:
         repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
         state: present
-        filename: google-chrome
-
-    - name: Update apt cache
-      apt:
-        update_cache: yes
 
     - name: Install Google Chrome
       apt:
         name: google-chrome-stable
         state: present
-
