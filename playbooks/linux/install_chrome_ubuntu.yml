@@ -2,29 +2,26 @@
 - name: Install Google Chrome on Ubuntu
   hosts: 10.11.2.44
   become: yes
+  become_method: sudo
 
   tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
     - name: Install required packages
       apt:
         name:
           - wget
           - gnupg
-          - ca-certificates
-        state: present
-        update_cache: yes
-
-    - name: Add Google Chrome GPG key
-      apt_key:
-        url: https://dl.google.com/linux/linux_signing_key.pub
         state: present
 
-    - name: Add Google Chrome repository
-      apt_repository:
-        repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
-        state: present
+    - name: Download Google Chrome
+      get_url:
+        url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        dest: /tmp/google-chrome.deb
 
     - name: Install Google Chrome
       apt:
-        name: google-chrome-stable
-        state: present
-
+        deb: /tmp/google-chrome.deb
