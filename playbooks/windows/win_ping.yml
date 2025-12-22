@@ -1,6 +1,6 @@
 ---
 - name: Ping Windows hosts
-  hosts: all
+  hosts: 10.11.2.20
   gather_facts: no
   tasks:
     - name: Test WinRM connection
