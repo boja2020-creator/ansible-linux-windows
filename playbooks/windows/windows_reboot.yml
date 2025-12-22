@@ -5,14 +5,11 @@
   tasks:
 
     - name: Force reboot Windows host
-      win_reboot:
-        reboot_timeout: 30      # Wait up to 10 minutes for host to come back
-        pre_reboot_delay: 5      # Delay before initiating reboot
-        post_reboot_delay: 10    # Delay after host comes back online
-        msg: "Forced reboot initiated by AWX/Ansible"
-        force: yes               # Forcefully close running apps
-      register: reboot_result
+      win_shell: Restart-Computer -Force -Confirm:$false
+      async: 1
+      poll: 0
+      ignore_errors: yes
 
-    - name: Show reboot result
-      debug:
-        var: reboot_result
+    - name: Wait for host to come back online
+      wait_for_connection:
+        timeout: 600
