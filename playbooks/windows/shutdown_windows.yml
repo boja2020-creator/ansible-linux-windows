@@ -1,6 +1,6 @@
 ---
 - name: Shutdown Windows desktop
-  hosts: windows
+  hosts: all
   gather_facts: no
   tasks:
     - name: Shutdown Windows now
