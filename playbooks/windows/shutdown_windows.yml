@@ -1,9 +1,11 @@
 ---
-- name: Shutdown Windows desktop
+- name: Force shutdown Windows 11 hosts
   hosts: all
   gather_facts: no
   tasks:
-    - name: Shutdown Windows now
-      ansible.windows.win_shutdown:
-        shutdown_timeout: 0
-        msg: "System will shutdown now (AWX Ansible)"
+
+    - name: Force shutdown Windows immediately
+      win_shell: shutdown /s /f /t 0
+      async: 1
+      poll: 0
+      ignore_errors: yes
