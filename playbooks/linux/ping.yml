@@ -1,6 +1,6 @@
 ---
 - name: Ping Linux Servers
-  hosts: snulab9
+  hosts: all
   become: false
   tasks:
     - name: Ping test
