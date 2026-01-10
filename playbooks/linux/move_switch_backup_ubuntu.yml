@@ -1,0 +1,16 @@
+---
+- name: Copy backup from AWX to Ubuntu Desktop
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Ensure desktop folder exists
+      file:
+        path: /home/student/Desktop/cisco_backup
+        state: directory
+
+    - name: Copy backup files
+      copy:
+        src: /var/lib/awx/projects/backups/cisco/
+        dest: /home/student/Desktop/cisco_backup/
+        remote_src: yes
