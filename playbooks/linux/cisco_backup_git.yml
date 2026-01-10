@@ -1,0 +1,45 @@
+---
+- name: Cisco Switch Backup with Git Auto-Commit
+  hosts: cisco_switches
+  gather_facts: no
+  serial: 1
+
+  vars:
+    backup_dir: "/opt/network-automation/backups"
+
+  tasks:
+
+    - name: Collect switch facts
+      cisco.ios.ios_facts:
+
+    - name: Backup running config
+      cisco.ios.ios_config:
+        backup: yes
+        backup_options:
+          dir_path: "{{ backup_dir }}"
+          filename: "{{ inventory_hostname }}.cfg"
+
+    - name: Git add config
+      delegate_to: localhost
+      run_once: true
+      command: git add .
+      args:
+        chdir: "{{ backup_dir }}"
+
+    - name: Git commit changes
+      delegate_to: localhost
+      run_once: true
+      command: >
+        git commit -m "Auto backup {{ ansible_date_time.date }} {{ ansible_date_time.time }}"
+      args:
+        chdir: "{{ backup_dir }}"
+      register: git_commit
+      failed_when: false
+
+    - name: Git push to remote
+      delegate_to: localhost
+      run_once: true
+      command: git push origin main
+      args:
+        chdir: "{{ backup_dir }}"
+      when: git_commit.rc == 0
