@@ -1,1 +1,12 @@
 
+---
+- name: Copy PDF file to eco user Documents
+  hosts: 10.11.2.11
+  gather_facts: no
+
+  tasks:
+    - name: Copy PDF file
+      ansible.windows.win_copy:
+        src: C:\Temp\sample.pdf
+        dest: C:\Users\eco\Documents\sample.pdf
+        remote_src: yes
