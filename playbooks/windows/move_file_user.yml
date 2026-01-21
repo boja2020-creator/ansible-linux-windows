@@ -1,7 +1,7 @@
 
 ---
 - name: Copy PDF file to eco user Documents
-  hosts: 10.11.2.11
+  hosts: all
   gather_facts: no
 
   tasks:
