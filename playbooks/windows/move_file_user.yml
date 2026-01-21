@@ -3,6 +3,9 @@
 - name: Copy PDF file to eco user Documents
   hosts: 10.11.2.11
   gather_facts: no
+  become: yes
+  become_method: runas
+  become_user: SNUC
 
   tasks:
     - name: Copy PDF file
