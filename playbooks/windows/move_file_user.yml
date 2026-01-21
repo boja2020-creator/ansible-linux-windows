@@ -7,6 +7,6 @@
   tasks:
     - name: Copy PDF file
       ansible.windows.win_copy:
-        src: ../home/snuc/Downloads/PiP-CA-3.pdf
+        src: /home/snuc/Downloads/PiP-CA-3.pdf
         dest: C:\Users\eco\Download\sample.pdf
         remote_src: yes
