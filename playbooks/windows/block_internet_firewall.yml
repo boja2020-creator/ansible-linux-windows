@@ -1,6 +1,7 @@
+...
 - name: Block Internet on Windows
 #  hosts: windowsl6
-  hosts: all
+  hosts: 10.11.2.39
   gather_facts: no
 
   tasks:
