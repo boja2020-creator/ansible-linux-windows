@@ -10,7 +10,7 @@
   tasks:
 
     - name: Collect switch facts
-      cisco.ios.ios_facts:
+        cisco.ios.ios_facts:
 
     - name: Backup running config
       cisco.ios.ios_config:
@@ -43,4 +43,5 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
+
 
