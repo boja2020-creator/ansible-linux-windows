@@ -1,6 +1,6 @@
 ---
 - name: Cisco Switch Backup with Git Auto-Commit
-  hosts: cisco_switches
+  hosts: 10.103.0.251
   gather_facts: no
   serial: 1
 
@@ -43,3 +43,4 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
+
