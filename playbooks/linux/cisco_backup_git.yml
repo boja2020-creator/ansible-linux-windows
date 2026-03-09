@@ -50,24 +50,24 @@
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
    
-   - name: Git add config
-     delegate_to: localhost
-     become: false
-     run_once: true
-     command: git add .
-     args:
-       chdir: "{{ backup_dir }}"
+    - name: Git add config
+      delegate_to: localhost
+      become: false
+      run_once: true
+      command: git add .
+      args:
+        chdir: "{{ backup_dir }}"
    
-   - name: Git commit changes
-     delegate_to: localhost
-     become: false
-     run_once: true
-     command: >
-       git commit -m "Auto backup {{ backup_time.stdout }}"
-     args:
-       chdir: "{{ backup_dir }}"
-     register: git_commit
-     failed_when: false
+    - name: Git commit changes
+      delegate_to: localhost
+      become: false
+      run_once: true
+      command: >
+        git commit -m "Auto backup {{ backup_time.stdout }}"
+      args:
+        chdir: "{{ backup_dir }}"
+      register: git_commit
+      failed_when: false
 
    - name: Git push to remote
      delegate_to: localhost
@@ -78,3 +78,4 @@
        chdir: "{{ backup_dir }}"
      when: git_commit.rc == 0
      
+
