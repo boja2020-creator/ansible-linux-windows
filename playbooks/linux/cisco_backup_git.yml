@@ -70,8 +70,9 @@
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
 
-    - name: Save backup to persistent location
-      delegate_to: localhost
-      copy:
-        content: "{{ switch_backup.backup_config }}"
-        dest: "/persistent/share/backups/{{ inventory_hostname }}.cfg"
+   - name: Ensure backup directory exists on AWX host
+     delegate_to: localhost
+     file:
+       path: "/persistent/share/backups"
+       state: directory
+       mode: "0755"
