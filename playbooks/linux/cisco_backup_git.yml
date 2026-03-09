@@ -5,7 +5,7 @@
   serial: 1
 
   vars:
-    backup_dir: "/opt/network-automation/backups"
+    backup_dir: "/tmp/backups"
 
   tasks:
 
@@ -19,6 +19,12 @@
           dir_path: "{{ backup_dir }}"
           filename: "{{ inventory_hostname }}.cfg"
 
+    - name: Get date/time
+      delegate_to: localhost
+      run_once: true
+      command: date +"%Y-%m-%d_%H-%M-%S"
+      register: backup_time
+
     - name: Git add config
       delegate_to: localhost
       run_once: true
@@ -30,7 +36,7 @@
       delegate_to: localhost
       run_once: true
       command: >
-        git commit -m "Auto backup {{ ansible_date_time.date }} {{ ansible_date_time.time }}"
+        git commit -m "Auto backup {{ backup_time.stdout }}"
       args:
         chdir: "{{ backup_dir }}"
       register: git_commit
@@ -43,10 +49,3 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
-      
-   - name: Get date/time
-     delegate_to: localhost
-     run_once: true
-     command: date +"%Y-%m-%d_%H-%M-%S"
-     register: backup_time
-
