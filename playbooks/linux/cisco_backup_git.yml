@@ -32,6 +32,7 @@
         backup_options:
           dir_path: "{{ backup_dir }}"
           filename: "{{ inventory_hostname }}.cfg"
+      delegate_to: localhost
 
     - name: Get date/time
       delegate_to: localhost
