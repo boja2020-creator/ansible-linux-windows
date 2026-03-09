@@ -5,54 +5,60 @@
   serial: 1
 
   vars:
-    backup_dir: "/runner/project/backups"
+    backup_dir: "/runner/project/backups"   # AWX host persistent folder
 
   tasks:
 
-    - name: Ensure backup directory exists
+    # 1️⃣ Ensure the backup directory exists on AWX host
+    - name: Ensure backup directory exists on AWX host
       delegate_to: localhost
       run_once: true
       file:
         path: "{{ backup_dir }}"
         state: directory
+        mode: "0755"
 
-    - name: Initialize git repository if not present
+    # 2️⃣ Initialize git repository if not already present
+    - name: Initialize git repository
       delegate_to: localhost
       run_once: true
       command: git init
       args:
         chdir: "{{ backup_dir }}"
 
+    # 3️⃣ Collect switch facts
     - name: Collect switch facts
       cisco.ios.ios_facts:
 
-    - name: Backup running config on switch
+    # 4️⃣ Backup running config on switch
+    - name: Backup running config
       cisco.ios.ios_config:
         backup: yes
-#        backup_options:
-#          dir_path: "{{ backup_dir }}"
-#          filename: "{{ inventory_hostname }}.cfg"
       register: switch_backup
 
-#    - name: Save backup to AWX server
-#      delegate_to: localhost
-#      copy:
-#        content: "{{ switch_backup.backup_config }}"
-#        dest: "{{ backup_dir }}/{{ inventory_hostname }}.cfg"
+    # 5️⃣ Save the backup to AWX host persistent folder
+    - name: Save backup to AWX host
+      delegate_to: localhost
+      copy:
+        content: "{{ switch_backup.backup_config }}"
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}.cfg"
 
+    # 6️⃣ Get current date/time for Git commit
     - name: Get date/time
       delegate_to: localhost
       run_once: true
       command: date +"%Y-%m-%d_%H-%M-%S"
       register: backup_time
 
-    - name: Git add config
+    # 7️⃣ Git add changes
+    - name: Git add backup files
       delegate_to: localhost
       run_once: true
       command: git add .
       args:
         chdir: "{{ backup_dir }}"
 
+    # 8️⃣ Git commit changes
     - name: Git commit changes
       delegate_to: localhost
       run_once: true
@@ -62,6 +68,7 @@
       register: git_commit
       failed_when: false
 
+    # 9️⃣ Git push to remote
     - name: Git push to remote
       delegate_to: localhost
       run_once: true
@@ -69,10 +76,3 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
-
-    - name: Ensure backup directory exists on AWX host
-      delegate_to: localhost
-      file:
-        path: "/persistent/share/backups"
-        state: directory
-        mode: "0755"
