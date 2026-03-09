@@ -2,7 +2,9 @@
 - name: Cisco Switch Backup with Git Auto-Commit
   hosts: 10.103.0.251
   gather_facts: no
-  serial: 1
+#  serial: 1
+  collections:
+    - cisco.ios
 
   vars:
     backup_dir: "/opt/network-automation/backups"
@@ -43,6 +45,7 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
+
 
 
 
