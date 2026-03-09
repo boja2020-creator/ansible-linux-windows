@@ -1,0 +1,12 @@
+---
+- name: Test Cisco Switch
+  hosts: switches
+  gather_facts: no
+  collections:
+    - cisco.ios
+
+  tasks:
+    - name: Show version
+      cisco.ios.ios_command:
+        commands:
+          - show version
