@@ -70,9 +70,9 @@
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
 
-   - name: Ensure backup directory exists on AWX host
-     delegate_to: localhost
-     file:
-       path: "/persistent/share/backups"
-       state: directory
-       mode: "0755"
+    - name: Ensure backup directory exists on AWX host
+      delegate_to: localhost
+      file:
+        path: "/persistent/share/backups"
+        state: directory
+        mode: "0755"
