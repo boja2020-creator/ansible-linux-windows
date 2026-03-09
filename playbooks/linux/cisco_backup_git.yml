@@ -26,13 +26,16 @@
     - name: Collect switch facts
       cisco.ios.ios_facts:
 
-    - name: Backup running config
+    - name: Backup running config on switch
       cisco.ios.ios_config:
         backup: yes
-        backup_options:
-          dir_path: "{{ backup_dir }}"
-          filename: "{{ inventory_hostname }}.cfg"
+      register: switch_backup
+
+    - name: Save backup to AWX server
       delegate_to: localhost
+      copy:
+        content: "{{ switch_backup.backup_config }}"
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}.cfg"
 
     - name: Get date/time
       delegate_to: localhost
