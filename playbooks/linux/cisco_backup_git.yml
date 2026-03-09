@@ -5,9 +5,23 @@
   serial: 1
 
   vars:
-#    backup_dir: "/runner/project/backups"
+    backup_dir: "/runner/project/backups"
 
   tasks:
+
+    - name: Ensure backup directory exists
+      delegate_to: localhost
+      run_once: true
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+
+    - name: Initialize git repository if not present
+      delegate_to: localhost
+      run_once: true
+      command: git init
+      args:
+        chdir: "{{ backup_dir }}"
 
     - name: Collect switch facts
       cisco.ios.ios_facts:
@@ -35,8 +49,7 @@
     - name: Git commit changes
       delegate_to: localhost
       run_once: true
-      command: >
-        git commit -m "Auto backup {{ backup_time.stdout }}"
+      command: git commit -m "Auto backup {{ backup_time.stdout }}"
       args:
         chdir: "{{ backup_dir }}"
       register: git_commit
@@ -49,60 +62,3 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
-   
-    - name: Git add config
-      delegate_to: localhost
-      become: false
-      run_once: true
-      command: git add .
-      args:
-        chdir: "{{ backup_dir }}"
-   
-    - name: Git commit changes
-      delegate_to: localhost
-      become: false
-      run_once: true
-      command: >
-        git commit -m "Auto backup {{ backup_time.stdout }}"
-      args:
-        chdir: "{{ backup_dir }}"
-      register: git_commit
-      failed_when: false
-
-    - name: Git push to remote
-      delegate_to: localhost
-      become: false
-      run_once: true
-      command: git push origin main
-      args:
-        chdir: "{{ backup_dir }}"
-      when: git_commit.rc == 0
-
-    - name: Ensure backup directory exists
-      delegate_to: localhost
-      become: false
-      run_once: true
-      file:
-        path: "{{ backup_dir }}"
-        state: directory
-
-    - name: Initialize git repository if not present
-      delegate_to: localhost
-      become: false
-      run_once: true
-      command: git init
-      args:
-        chdir: "{{ backup_dir }}"
-        
-    - name: Create backup directory
-      delegate_to: localhost
-      run_once: true
-      become: false
-     file:
-       path: "{{ backup_dir }}"
-       state: directory
-
-
-
-
-
