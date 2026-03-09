@@ -1,0 +1,25 @@
+- name: Restore Normal Internet After Exam
+#  hosts: windowsl6
+  hosts: 10.11.2.12
+  gather_facts: no
+
+  tasks:
+
+    - name: Set outbound default back to Allow
+      ansible.windows.win_shell: |
+        Set-NetFirewallProfile -Profile Domain,Private,Public -DefaultOutboundAction Allow
+
+    - name: Remove Block Internet rule
+      community.windows.win_firewall_rule:
+        name: Block_Internet_All
+        state: absent
+
+    - name: Remove Allow Local Web Server 1 rule
+      community.windows.win_firewall_rule:
+        name: Allow_Local_101190
+        state: absent
+
+    - name: Remove Allow Local Web Server 2 rule
+      community.windows.win_firewall_rule:
+        name: Allow_Local_1011243
+        state: absent

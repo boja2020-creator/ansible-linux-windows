@@ -1,7 +1,7 @@
 ---
 - name: Unblock Internet on Windows
 #  hosts: windowsl6
-  hosts: 10.11.1.83
+  hosts: 10.11.1.71
   gather_facts: no
   tasks:
 
@@ -9,3 +9,4 @@
       community.windows.win_firewall_rule:
         name: "Block_Internet_All"
         state: absent
+

@@ -1,0 +1,54 @@
+- name: Exam Mode - Allow Local Servers Only
+#  hosts: windowsl6
+  hosts: 10.11.2.12
+  gather_facts: no
+
+  tasks:
+
+    - name: Remove old block rule if exists
+      community.windows.win_firewall_rule:
+        name: Block_Internet_All
+        state: absent
+
+    - name: Allow Local Web Server 1
+      community.windows.win_firewall_rule:
+        name: Allow_Local_101190
+        direction: out
+        action: allow
+        protocol: TCP
+        remoteip: 10.11.1.90
+#        remoteport: 80, 443
+#        profile: Domain, Private,Public
+        profiles:
+          - Domain
+          - Private
+          - Public
+        profile: any
+        state: present
+
+    - name: Allow Local Web Server 2
+      community.windows.win_firewall_rule:
+        name: Allow_Local_1011243
+        direction: out
+        action: allow
+        protocol: TCP
+        remoteip: 10.11.2.43
+#        remoteport: 80,443
+#        profile: Domain,Private,Public
+        profile: any
+        state: present
+
+    - name: Block All Other Internet
+      community.windows.win_firewall_rule:
+        name: Block_Internet_All
+        direction: out
+        action: block
+        protocol: any
+        remoteip: any
+        state: present
+
+    - name: Set outbound default to block
+      ansible.windows.win_shell: |
+        Set-NetFirewallProfile -Profile Domain,Private,Public -DefaultOutboundAction Block
+
+    
