@@ -5,10 +5,10 @@
 
   tasks:
 
-    - name: Remove old block rule if exists
-      community.windows.win_firewall_rule:
-        name: Block_Internet_All
-        state: absent
+#    - name: Remove old block rule if exists
+#      community.windows.win_firewall_rule:
+#        name: Block_Internet_All
+#        state: absent
 
     - name: Allow Local Web Server 1
       community.windows.win_firewall_rule:
