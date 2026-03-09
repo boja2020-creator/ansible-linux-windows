@@ -69,13 +69,14 @@
       register: git_commit
       failed_when: false
 
-   - name: Git push to remote
-     delegate_to: localhost
-     become: false
-     run_once: true
-     command: git push origin main
-     args:
-       chdir: "{{ backup_dir }}"
-     when: git_commit.rc == 0
+    - name: Git push to remote
+      delegate_to: localhost
+      become: false
+      run_once: true
+      command: git push origin main
+      args:
+        chdir: "{{ backup_dir }}"
+      when: git_commit.rc == 0
      
+
 
