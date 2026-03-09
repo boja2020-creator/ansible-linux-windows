@@ -77,6 +77,22 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
-     
+
+    - name: Ensure backup directory exists
+      delegate_to: localhost
+      become: false
+      run_once: true
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+
+    - name: Initialize git repository if not present
+      delegate_to: localhost
+      become: false
+      run_once: true
+      command: git init
+      args:
+        chdir: "{{ backup_dir }}"
+
 
 
