@@ -1,0 +1,17 @@
+---
+- name: Block Internet on Windows
+  hosts: 10.11.2.39
+  gather_facts: no
+  collections:
+    - community.windows
+
+  tasks:
+    - name: Block all outbound internet
+      win_firewall_rule:
+        name: Block_Internet_All
+        direction: out
+        action: block
+        enabled: yes
+        protocol: any
+        remoteip: any
+        state: present

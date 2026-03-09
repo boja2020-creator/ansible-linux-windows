@@ -1,7 +1,8 @@
 ---
-- name: Ping Linux Servers
-  hosts: 10.11.2.44
-  become: false
+- name: Ping Linux servers
+  hosts: linux
+  gather_facts: no
+
   tasks:
-    - name: Ping test
-      ping:
+    - name: Test connectivity
+      ansible.builtin.ping:

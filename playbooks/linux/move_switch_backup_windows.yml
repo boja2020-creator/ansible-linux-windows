@@ -1,0 +1,18 @@
+---
+- name: Copy backup to Windows Desktop
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Copy backups using SCP
+      shell: |
+        scp -r /var/lib/awx/projects/backups/cisco \
+        windowsuser@10.11.2.20:/c/Users/windowsuser/Desktop/
+
+# sudo mount -t cifs //10.11.2.20/Backup /mnt/windows \ -o username=windowsuser,password=Password123
+
+#- copy:
+#    src: /var/lib/awx/projects/backups/cisco/
+#    dest: /mnt/windows/
+#    remote_src: yes
+

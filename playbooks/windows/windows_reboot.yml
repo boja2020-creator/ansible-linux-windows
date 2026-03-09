@@ -1,0 +1,15 @@
+---
+- name: Force reboot Windows hosts
+  hosts: all
+  gather_facts: no
+  tasks:
+
+    - name: Force reboot Windows host
+      win_shell: Restart-Computer -Force -Confirm:$false
+      async: 1
+      poll: 0
+      ignore_errors: yes
+
+    - name: Wait for host to come back online
+      wait_for_connection:
+        timeout: 60

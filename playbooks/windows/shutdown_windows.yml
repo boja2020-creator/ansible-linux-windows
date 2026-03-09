@@ -1,0 +1,11 @@
+---
+- name: Force shutdown Windows 11 hosts
+  hosts: all
+  gather_facts: no
+  tasks:
+
+    - name: Force shutdown Windows immediately
+      win_shell: shutdown /s /f /t 0
+      async: 1
+      poll: 0
+      ignore_errors: yes
