@@ -76,3 +76,18 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
+
+    - name: Ensure backup directory exists
+      delegate_to: localhost
+      run_once: true
+      file:
+        path: /runner/project/backups
+        state: directory
+        mode: '0755'
+
+    - name: Backup running config on switch
+      cisco.ios.ios_config:
+        backup: yes
+        backup_options:
+          dir_path: /runner/project/backups
+          filename: "{{ inventory_hostname }}.cfg"
