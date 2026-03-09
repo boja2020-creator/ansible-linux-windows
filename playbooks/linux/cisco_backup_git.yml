@@ -5,7 +5,7 @@
   serial: 1
 
   vars:
-    backup_dir: "/runner/project/backups"
+#    backup_dir: "/runner/project/backups"
 
   tasks:
 
