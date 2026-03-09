@@ -5,12 +5,12 @@
   serial: 1
 
   vars:
-    backup_dir: "/runner/project/backups"   # AWX host persistent folder
+    backup_dir: "/runner/project/backups"   # Persistent folder on AWX host
 
   tasks:
 
-    # 1️⃣ Ensure the backup directory exists on AWX host
-    - name: Ensure backup directory exists on AWX host
+    # 1️⃣ Ensure backup directory exists on AWX host
+    - name: Ensure backup directory exists
       delegate_to: localhost
       run_once: true
       file:
@@ -18,7 +18,7 @@
         state: directory
         mode: "0755"
 
-    # 2️⃣ Initialize git repository if not already present
+    # 2️⃣ Initialize git repository if not present
     - name: Initialize git repository
       delegate_to: localhost
       run_once: true
@@ -30,27 +30,22 @@
     - name: Collect switch facts
       cisco.ios.ios_facts:
 
-    # 4️⃣ Backup running config on switch
+    # 4️⃣ Backup running config directly to AWX host folder
     - name: Backup running config
       cisco.ios.ios_config:
         backup: yes
-      register: switch_backup
+        backup_options:
+          dir_path: "{{ backup_dir }}"
+          filename: "{{ inventory_hostname }}.cfg"
 
-    # 5️⃣ Save the backup to AWX host persistent folder
-    - name: Save backup to AWX host
-      delegate_to: localhost
-      copy:
-        content: "{{ switch_backup.backup_config }}"
-        dest: "{{ backup_dir }}/{{ inventory_hostname }}.cfg"
-
-    # 6️⃣ Get current date/time for Git commit
-    - name: Get date/time
+    # 5️⃣ Get current date/time for Git commit
+    - name: Get current date/time
       delegate_to: localhost
       run_once: true
       command: date +"%Y-%m-%d_%H-%M-%S"
       register: backup_time
 
-    # 7️⃣ Git add changes
+    # 6️⃣ Git add backup files
     - name: Git add backup files
       delegate_to: localhost
       run_once: true
@@ -58,7 +53,7 @@
       args:
         chdir: "{{ backup_dir }}"
 
-    # 8️⃣ Git commit changes
+    # 7️⃣ Git commit changes
     - name: Git commit changes
       delegate_to: localhost
       run_once: true
@@ -68,7 +63,7 @@
       register: git_commit
       failed_when: false
 
-    # 9️⃣ Git push to remote
+    # 8️⃣ Git push to remote
     - name: Git push to remote
       delegate_to: localhost
       run_once: true
@@ -76,18 +71,3 @@
       args:
         chdir: "{{ backup_dir }}"
       when: git_commit.rc == 0
-
-    - name: Ensure backup directory exists
-      delegate_to: localhost
-      run_once: true
-      file:
-        path: /runner/project/backups
-        state: directory
-        mode: '0755'
-
-    - name: Backup running config on switch
-      cisco.ios.ios_config:
-        backup: yes
-        backup_options:
-          dir_path: /runner/project/backups
-          filename: "{{ inventory_hostname }}.cfg"
