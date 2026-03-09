@@ -93,6 +93,14 @@
       command: git init
       args:
         chdir: "{{ backup_dir }}"
+        
+    - name: Create backup directory
+      delegate_to: localhost
+      run_once: true
+      become: false
+     file:
+       path: "{{ backup_dir }}"
+       state: directory
 
 
 
